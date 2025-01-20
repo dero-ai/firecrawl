@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import { AzureOpenAI } from "openai";
 import Ajv from "ajv";
 const ajv = new Ajv(); // Initialize AJV for JSON schema validation
 
@@ -24,7 +24,11 @@ export async function generateCompletions(
     documents.map(async (document: Document) => {
       switch (switchVariable) {
         case "openAI":
-          const llm = new OpenAI();
+          const llm = new AzureOpenAI({
+            apiKey: process.env.AZURE_OPENAI_CREDENTIAL,
+            endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+            apiVersion: process.env.AZURE_OPENAI_VERSION,
+          });
           try {
             const completionResult = await generateOpenAICompletions({
               client: llm,
@@ -66,7 +70,11 @@ export async function generateCompletions(
 // generate basic completion
 
 export async function generateBasicCompletion(prompt: string) {
-  const openai = new OpenAI();
+  const openai = new AzureOpenAI({
+    apiKey: process.env.AZURE_OPENAI_CREDENTIAL,
+    endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+    apiVersion: process.env.AZURE_OPENAI_VERSION,
+  });
   const model = "gpt-4o";
 
   const completion = await openai.chat.completions.create({

@@ -20,14 +20,18 @@ import { _addScrapeJobToBullMQ } from "../../services/queue-jobs";
 import { saveCrawl, StoredCrawl } from "../crawl-redis";
 import { dereferenceSchema } from "./helpers/dereference-schema";
 import { z } from "zod";
-import OpenAI from "openai";
+import { AzureOpenAI } from "openai";
 import { spreadSchemas } from "./helpers/spread-schemas";
 import { transformArrayToObject } from "./helpers/transform-array-to-obj";
 import { mixSchemaObjects } from "./helpers/mix-schema-objs";
 import Ajv from "ajv";
 const ajv = new Ajv();
 
-const openai = new OpenAI();
+const openai = new AzureOpenAI({
+  apiKey: process.env.AZURE_OPENAI_CREDENTIAL,
+  endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+  apiVersion: process.env.AZURE_OPENAI_VERSION,
+});
 import { ExtractStep, updateExtract } from "./extract-redis";
 import { deduplicateObjectsArray } from "./helpers/deduplicate-objs-array";
 import { mergeNullValObjs } from "./helpers/merge-null-val-objs";
@@ -704,7 +708,7 @@ export async function performExtraction(
     origin: request.origin ?? "api",
     num_tokens: totalTokensUsed,
     tokens_billed: tokensToBill,
-  }).then(() => {
+  }, true).then(() => {
     updateExtract(extractId, {
       status: "completed",
       llmUsage,

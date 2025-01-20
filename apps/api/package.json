@@ -58,6 +58,8 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.3",
     "@apidevtools/json-schema-ref-parser": "^11.7.3",
+    "@azure/identity": "^4.6.0",
+    "@azure/openai": "^2.0.0",
     "@brillout/import": "^0.2.2",
     "@bull-board/api": "^5.20.5",
     "@bull-board/express": "^5.20.5",

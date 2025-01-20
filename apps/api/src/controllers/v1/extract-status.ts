@@ -2,7 +2,9 @@ import { Response } from "express";
 import { supabaseGetJobsById } from "../../lib/supabase-jobs";
 import { RequestWithAuth } from "./types";
 import { getExtract, getExtractExpiry } from "../../lib/extract/extract-redis";
+import { Redis } from "ioredis";
 
+const redisConnection = new Redis(process.env.REDIS_URL || "redis://localhost:6379");
 export async function extractStatusController(
   req: RequestWithAuth<{ jobId: string }, any, any>,
   res: Response,
@@ -19,15 +21,16 @@ export async function extractStatusController(
   let data: any[] = [];
 
   if (extract.status === "completed") {
-    const jobData = await supabaseGetJobsById([req.params.jobId]);
-    if (!jobData || jobData.length === 0) {
+    const jobResult = await redisConnection.get(`job_result:${req.params.jobId}`);
+    if (!jobResult) {
       return res.status(404).json({
         success: false,
-        error: "Job not found",
+        error: "Job not found", 
       });
     }
 
-    data = jobData[0].docs;
+    const jobData = JSON.parse(jobResult);
+    data = jobData.docs;
   }
 
   return res.status(200).json({

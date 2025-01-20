@@ -192,9 +192,6 @@ export async function getMapResults({
       }
     }
 
-    // Add sitemap-index URLs
-    links.push(...sitemapIndexUrls);
-
     // Perform cosine similarity between the search query and the list of links
     if (search) {
       const searchQuery = search.toLowerCase();

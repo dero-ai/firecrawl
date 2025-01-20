@@ -57,12 +57,12 @@ export async function extractController(
     extractId,
   };
 
-  if (
-    (await getTeamIdSyncB(req.auth.team_id)) &&
-    req.body.origin !== "api-sdk"
-  ) {
-    return await oldExtract(req, res, extractId);
-  }
+  // if (
+  //   (await getTeamIdSyncB(req.auth.team_id)) &&
+  //   req.body.origin !== "api-sdk"
+  // ) {
+  //   return await oldExtract(req, res, extractId);
+  // }
 
   await saveExtract(extractId, {
     id: extractId,

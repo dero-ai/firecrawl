@@ -1,12 +1,13 @@
 import { Pinecone } from "@pinecone-database/pinecone";
 import { Document } from "../../../controllers/v1/types";
 import { logger } from "../../logger";
-import OpenAI from "openai";
+import { AzureOpenAI } from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const openai = new AzureOpenAI({
+  apiKey: process.env.AZURE_OPENAI_CREDENTIAL,
+  endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+  apiVersion: process.env.AZURE_OPENAI_VERSION,
 });
-
 const pinecone = new Pinecone({
   apiKey: process.env.PINECONE_API_KEY!,
 });

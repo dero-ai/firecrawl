@@ -1,11 +1,13 @@
 import { ExtractorOptions } from "./../../lib/entities";
-import { supabase_service } from "../supabase";
 import { FirecrawlJob } from "../../types";
 import { posthog } from "../posthog";
 import "dotenv/config";
 import { logger } from "../../lib/logger";
 import { configDotenv } from "dotenv";
+import { Redis } from "ioredis";
 configDotenv();
+
+const redisConnection = new Redis(process.env.REDIS_URL || "redis://localhost:6379");
 
 function cleanOfNull<T>(x: T): T {
   if (Array.isArray(x)) {
@@ -23,27 +25,7 @@ function cleanOfNull<T>(x: T): T {
 
 export async function logJob(job: FirecrawlJob, force: boolean = false) {
   try {
-    const useDbAuthentication = process.env.USE_DB_AUTHENTICATION === "true";
-    if (!useDbAuthentication) {
-      return;
-    }
-
-    // Redact any pages that have an authorization header
-    // actually, Don't. we use the db to retrieve results now. this breaks authed crawls - mogery
-    // if (
-    //   job.scrapeOptions &&
-    //   job.scrapeOptions.headers &&
-    //   job.scrapeOptions.headers["Authorization"]
-    // ) {
-    //   job.scrapeOptions.headers["Authorization"] = "REDACTED";
-    //   job.docs = [
-    //     {
-    //       content: "REDACTED DUE TO AUTHORIZATION HEADER",
-    //       html: "REDACTED DUE TO AUTHORIZATION HEADER",
-    //     },
-    //   ];
-    // }
-    const jobColumn = {
+    const jobData = {
       job_id: job.job_id ? job.job_id : null,
       success: job.success,
       message: job.message,
@@ -60,52 +42,41 @@ export async function logJob(job: FirecrawlJob, force: boolean = false) {
       retry: !!job.retry,
       crawl_id: job.crawl_id,
       tokens_billed: job.tokens_billed,
+      created_at: new Date().toISOString()
     };
+
+    console.log("================================", jobData);
 
     if (force) {
       let i = 0,
         done = false;
       while (i++ <= 10) {
         try {
-          const { error } = await supabase_service
-            .from("firecrawl_jobs")
-            .insert([jobColumn]);
-          if (error) {
-            logger.error(
-              "Failed to log job due to Supabase error -- trying again",
-              { error, scrapeId: job.job_id },
-            );
-            await new Promise<void>((resolve) =>
-              setTimeout(() => resolve(), 75),
-            );
-          } else {
-            done = true;
-            break;
-          }
+          await redisConnection.set(`job_result:${job.job_id}`, JSON.stringify(jobData));
+          done = true;
+          break;
         } catch (error) {
           logger.error(
-            "Failed to log job due to thrown error -- trying again",
+            "Failed to log job to Redis -- trying again",
             { error, scrapeId: job.job_id },
           );
           await new Promise<void>((resolve) => setTimeout(() => resolve(), 75));
         }
       }
       if (done) {
-        logger.debug("Job logged successfully!", { scrapeId: job.job_id });
+        logger.debug("Job logged successfully to Redis!", { scrapeId: job.job_id });
       } else {
-        logger.error("Failed to log job!", { scrapeId: job.job_id });
+        logger.error("Failed to log job to Redis!", { scrapeId: job.job_id });
       }
     } else {
-      const { error } = await supabase_service
-        .from("firecrawl_jobs")
-        .insert([jobColumn]);
-      if (error) {
-        logger.error(`Error logging job: ${error.message}`, {
+      try {
+        await redisConnection.set(`job_result:${job.job_id}`, JSON.stringify(jobData));
+        logger.debug("Job logged successfully to Redis!", { scrapeId: job.job_id });
+      } catch (error) {
+        logger.error(`Error logging job to Redis: ${error.message}`, {
           error,
           scrapeId: job.job_id,
         });
-      } else {
-        logger.debug("Job logged successfully!", { scrapeId: job.job_id });
       }
     }
 

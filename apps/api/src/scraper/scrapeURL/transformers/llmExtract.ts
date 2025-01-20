@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import { AzureOpenAI } from "openai";
 import { encoding_for_model } from "@dqbd/tiktoken";
 import { TiktokenModel } from "@dqbd/tiktoken";
 import { Document, ExtractOptions, TokenUsage } from "../../../controllers/v1/types";
@@ -76,7 +76,11 @@ export async function generateOpenAICompletions(
   let extract: any;
   let warning: string | undefined;
 
-  const openai = new OpenAI();
+  const openai = new AzureOpenAI({
+    apiKey: process.env.AZURE_OPENAI_CREDENTIAL,
+    endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+    apiVersion: process.env.AZURE_OPENAI_VERSION,
+  });
   const model: TiktokenModel =
     (process.env.MODEL_NAME as TiktokenModel) ?? "gpt-4o-mini";
 
@@ -267,7 +271,11 @@ export function removeDefaultProperty(schema: any): any {
 }
 
 export async function generateSchemaFromPrompt(prompt: string): Promise<any> {
-  const openai = new OpenAI();
+  const openai = new AzureOpenAI({
+    apiKey: process.env.AZURE_OPENAI_CREDENTIAL,
+    endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+    apiVersion: process.env.AZURE_OPENAI_VERSION,
+  });
 
   const temperatures = [0, 0.1, 0.3]; // Different temperatures to try
   let lastError: Error | null = null;

@@ -1,11 +1,13 @@
 import axios from "axios";
 import { configDotenv } from "dotenv";
-import OpenAI from "openai";
+import { AzureOpenAI } from "openai";
 
 configDotenv();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const openai = new AzureOpenAI({
+  apiKey: process.env.AZURE_OPENAI_CREDENTIAL,
+  endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+  apiVersion: process.env.AZURE_OPENAI_VERSION,
 });
 
 async function getEmbedding(text: string) {
