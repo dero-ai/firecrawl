@@ -3,8 +3,8 @@
 ## Setup
 
 1. `brew install redis`
-1. `asdf install`
 1. `cd apps/api`
+1. `asdf install`
 1. `pnpm install`
 1. in one terminal run `redis-server`
 1. in one terminal run `pnpm run workers`
