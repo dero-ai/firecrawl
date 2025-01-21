@@ -1,5 +1,17 @@
 # 🔥 Firecrawl for Dero 🐨
 
+## Setup
+
+1. `brew install redis`
+1. `asdf install`
+1. `cd apps/api`
+1. `pnpm install`
+1. in one terminal run `redis-server`
+1. in one terminal run `pnpm run workers`
+1. in one terminal run `pnpm run start`
+
+## Running an crawl
+
 Trigger an extract:
 
 ```bash
@@ -47,7 +59,7 @@ curl -X POST http://localhost:3002/v1/extract \
                 }
               },
               "required": [
-                "products",
+                "name",
                 "price",
                 "description",
                 "productLink"
