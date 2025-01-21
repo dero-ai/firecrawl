@@ -6,6 +6,8 @@
 1. `cd apps/api`
 1. `asdf install`
 1. `pnpm install`
+1. copy the `apps/api/.env.example` file to `apps/api/.env`
+1. ask @Asimov4 for the `AZURE_OPENAI_CREDENTIAL`
 1. in one terminal run `redis-server`
 1. in one terminal run `pnpm run workers`
 1. in one terminal run `pnpm run start`
