@@ -6,6 +6,10 @@ import { Redis } from "ioredis";
 
 const redisConnection = new Redis(process.env.REDIS_URL || "redis://localhost:6379");
 
+function replaceImageUrl(url: string): string {
+  return url?.replace(/\/v1\/fill\/[^/]+\//g, '/v1/fit/w_500,h_500,q_90/');
+}
+
 export async function publishController(
   req: RequestWithAuth<{ jobId: string, marketplaceName: string }, any, any>,
   res: Response,
@@ -44,8 +48,8 @@ export async function publishController(
           Source: "firecrawl",
           Name: product.name,
           Price: product.price,
-          Image: product.imageLink,
-          Images: product.additionalImageLinks,
+          Image: replaceImageUrl(product.imageLink),
+          Images: product.additionalImageLinks?.map(link => replaceImageUrl(link)),
           Link: product.productLink,
           Quality: product.condition,
           Description: product.description,
