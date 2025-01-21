@@ -68,3 +68,15 @@ Retrieve extract results:
 curl -X GET http://localhost:3002/v1/extract/c84c7cc3-f6f6-435e-904a-ca5b3e9c17f9 \
     -H 'Content-Type: application/json'
 ```
+
+To publish to algolia:
+
+```bash
+curl -X GET http://localhost:3002/v1/publish/<job id>/<marketplace name (with %20 instead of spaces)> \
+    -H 'Content-Type: application/json'
+```
+
+```bash
+curl -X GET http://localhost:3002/v1/publish/c84c7cc3-f6f6-435e-904a-ca5b3e9c17f9/Bien%20Tendrement \
+    -H 'Content-Type: application/json'
+```
