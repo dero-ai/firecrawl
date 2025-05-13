@@ -78,16 +78,6 @@ export async function extractController(
     agent: req.body.agent,
   };
 
-  if (
-    (await getTeamIdSyncB(req.auth.team_id)) &&
-    req.body.origin !== "api-sdk" &&
-    req.body.origin !== "website" &&
-    !req.body.origin.startsWith("python-sdk@") &&
-    !req.body.origin.startsWith("js-sdk@")
-  ) {
-    return await oldExtract(req, res, extractId);
-  }
-
   await saveExtract(extractId, {
     id: extractId,
     team_id: req.auth.team_id,
