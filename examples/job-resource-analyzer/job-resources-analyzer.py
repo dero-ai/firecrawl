@@ -3,7 +3,7 @@ import json
 import time
 import requests
 from dotenv import load_dotenv
-from openai import OpenAI
+from azure.ai.openai import OpenAIClient
 from serpapi.google_search import GoogleSearch
 
 class Colors:
@@ -16,7 +16,7 @@ class Colors:
 load_dotenv()
 
 # Initialize clients
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAIClient(endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"), credential=os.getenv("AZURE_OPENAI_CREDENTIAL"))
 firecrawl_api_key = os.getenv("FIRECRAWL_API_KEY")
 serp_api_key = os.getenv("SERP_API_KEY")
 

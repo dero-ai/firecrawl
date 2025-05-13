@@ -4,13 +4,13 @@ from swarm import Agent
 from swarm.repl import run_demo_loop
 import dotenv
 from serpapi import GoogleSearch
-from openai import OpenAI
+from azure.ai.openai import OpenAIClient
 
 dotenv.load_dotenv()
 
 # Initialize FirecrawlApp and OpenAI
 app = FirecrawlApp(api_key=os.getenv("FIRECRAWL_API_KEY"))
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAIClient(endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"), credential=os.getenv("AZURE_OPENAI_CREDENTIAL"))
 
 def search_google(query, objective):
     """Search Google using SerpAPI."""

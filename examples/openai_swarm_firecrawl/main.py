@@ -3,13 +3,13 @@ from firecrawl import FirecrawlApp
 from swarm import Agent
 from swarm.repl import run_demo_loop
 import dotenv
-from openai import OpenAI
+from azure.ai.openai import OpenAIClient
 
 dotenv.load_dotenv()
 
 # Initialize FirecrawlApp and OpenAI
 app = FirecrawlApp(api_key=os.getenv("FIRECRAWL_API_KEY"))
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAIClient(endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"), credential=os.getenv("AZURE_OPENAI_CREDENTIAL"))
 
 def scrape_website(url):
     """Scrape a website using Firecrawl."""

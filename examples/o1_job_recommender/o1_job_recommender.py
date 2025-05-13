@@ -4,7 +4,7 @@ import os
 import requests
 import json
 from dotenv import load_dotenv
-from openai import OpenAI
+from azure.ai.openai import OpenAIClient
 
 # ANSI color codes
 class Colors:
@@ -20,7 +20,7 @@ load_dotenv()
 
 # Initialize the FirecrawlApp with your API key
 firecrawl_api_key = os.getenv("FIRECRAWL_API_KEY")
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAIClient(endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"), credential=os.getenv("AZURE_OPENAI_CREDENTIAL"))
 
 # Set the jobs page URL
 jobs_page_url = "https://openai.com/careers/search"

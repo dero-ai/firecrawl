@@ -4,7 +4,7 @@ import os
 
 from dotenv import load_dotenv
 from firecrawl import FirecrawlApp
-from openai import OpenAI
+from azure.ai.openai import OpenAIClient
 from serpapi import GoogleSearch
 from swarm import Agent
 from swarm.repl import run_demo_loop
@@ -13,7 +13,7 @@ load_dotenv()
 
 # Initialize FirecrawlApp and OpenAI
 app = FirecrawlApp(api_key=os.getenv("FIRECRAWL_API_KEY"))
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAIClient(endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"), credential=os.getenv("AZURE_OPENAI_CREDENTIAL"))
 
 def crawl_and_analyze_url(url, objective):
     """Crawl a website using Firecrawl and analyze the content."""
