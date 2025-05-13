@@ -1,4 +1,4 @@
-import { createOpenAI } from "@ai-sdk/openai";
+import { createAzure } from "@ai-sdk/azure";
 import { createOllama } from "ollama-ai-provider";
 import { anthropic } from "@ai-sdk/anthropic";
 import { groq } from "@ai-sdk/groq";
@@ -23,9 +23,10 @@ const defaultProvider: Provider = process.env.OLLAMA_BASE_URL
   : "openai";
 
 const providerList: Record<Provider, any> = {
-  openai: createOpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-      baseURL: process.env.OPENAI_BASE_URL,
+  openai: createAzure({
+    apiKey: process.env.AZURE_OPENAI_CREDENTIAL,
+    baseURL: process.env.AZURE_OPENAI_ENDPOINT,
+    apiVersion: process.env.AZURE_OPENAI_VERSION,
   }), //OPENAI_API_KEY
   ollama: createOllama({
     baseURL: process.env.OLLAMA_BASE_URL,
