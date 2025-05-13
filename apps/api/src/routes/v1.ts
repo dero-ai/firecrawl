@@ -35,6 +35,7 @@ import { generateLLMsTextStatusController } from "../controllers/v1/generate-llm
 import { deepResearchController } from "../controllers/v1/deep-research";
 import { deepResearchStatusController } from "../controllers/v1/deep-research-status";
 import { tokenUsageController } from "../controllers/v1/token-usage";
+import { publishController } from "../controllers/v1/publish";
 
 function checkCreditsMiddleware(
   minimum?: number,
@@ -170,6 +171,12 @@ export function wrap(
 expressWs(express());
 
 export const v1Router = express.Router();
+
+v1Router.get(
+  "/publish/:jobId/:marketplaceName",
+  authMiddleware(RateLimiterMode.ExtractStatus),
+  wrap(publishController),
+);
 
 v1Router.post(
   "/scrape",
