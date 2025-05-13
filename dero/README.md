@@ -12,7 +12,7 @@
 1. in one terminal run `pnpm run workers`
 1. in one terminal run `pnpm run start`
 
-## Running an crawl
+## Running a crawl
 
 Trigger an extract:
 
